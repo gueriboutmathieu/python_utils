@@ -1,0 +1,14 @@
+# Python-generated files
+*__pycache__/
+*.pytest_cache/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# IDE files
+.idea/
+.vscode/
+
+# coverage
+.coverage

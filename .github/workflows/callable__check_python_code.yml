@@ -1,0 +1,78 @@
+name: 🧩 Check python code
+
+on:
+  workflow_call:
+    inputs:
+        python-version:
+            description: "Python version to use"
+            type: string
+            required: true
+            default: "3.11"
+        pytest-root:
+            description: "Root directory for pytest"
+            type: string
+            required: false
+            default: "tests"
+        check_alembic_migrations:
+            description: "Whether to check alembic migrations"
+            required: false
+            type: boolean
+            default: false
+
+jobs:
+  check-python-code:
+    name: Check python code
+    runs-on: ubuntu-latest
+    permissions: # for py-cov-action
+      pull-requests: write
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install and setup uv
+      run: |
+        echo "Installing uv"
+        sudo apt-get update
+        curl -LsSf https://astral.sh/uv/install.sh | RYE_INSTALL_OPTION="--yes" sh
+        uv python install ${{ inputs.python-version }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      working-directory: .
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv sync
+
+    - name: Ruff (linter and code formatter)
+      working-directory: .
+      shell: sh
+      run: uv run ruff check
+
+    - name: Pyright (type check)
+      working-directory: .
+      shell: sh
+      run: uv run pyright
+
+    - name: Validate alembic migrations
+      if: ${{ inputs.check_alembic_migrations == true }}
+      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@main
+      with:
+        root-directory: .
+
+    - name: Run Pytest
+      working-directory: .
+      shell: sh
+      run: |
+        uv run coverage run -m pytest ${{ inputs.pytest-root }} -x
+
+    - name: Coverage comment
+      uses: py-cov-action/python-coverage-comment-action@v3
+      with:
+        GITHUB_TOKEN: ${{ github.token }}
+        COVERAGE_PATH: .

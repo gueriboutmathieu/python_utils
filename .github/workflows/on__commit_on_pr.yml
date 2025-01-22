@@ -1,0 +1,9 @@
+name: On commit on PR
+
+on: pull_request
+
+jobs:
+  check-python-code:
+    name: Check python code
+    uses: ./.github/workflows/callable__check_python_code.yml
+    secrets: inherit
