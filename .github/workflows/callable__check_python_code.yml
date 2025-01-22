@@ -34,7 +34,7 @@ jobs:
       run: |
         echo "Installing uv"
         sudo apt-get update
-        curl -LsSf https://astral.sh/uv/install.sh | RYE_INSTALL_OPTION="--yes" sh
+        curl -LsSf https://astral.sh/uv/install.sh | sh
         uv python install ${{ inputs.python-version }}
 
     - name: Set up Python
@@ -61,7 +61,7 @@ jobs:
 
     - name: Validate alembic migrations
       if: ${{ inputs.check_alembic_migrations == true }}
-      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@main
+      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@fix/github_actions
       with:
         root-directory: .
 
