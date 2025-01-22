@@ -25,6 +25,9 @@ jobs:
   manage_release:
     name: Manage release
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
