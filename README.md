@@ -37,4 +37,5 @@ pytest tests
 ## Coverage
 ```shell
 coverage run -m pytest tests
+coverage report -m
 ```
