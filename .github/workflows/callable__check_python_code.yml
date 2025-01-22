@@ -61,7 +61,7 @@ jobs:
 
     - name: Validate alembic migrations
       if: ${{ inputs.check_alembic_migrations == true }}
-      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@fix/github_actions
+      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@main
       with:
         root-directory: .
 
