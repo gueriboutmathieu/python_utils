@@ -79,7 +79,7 @@ class SQLAlchemyCRUDRepository(Generic[TypeEntity]):
             )
             raise exception
         return entity
-        
+
 
     def update(self, entity_id: UUID, new_entity: TypeEntity) -> None:
         entity = self.get_or_raise(entity_id)
