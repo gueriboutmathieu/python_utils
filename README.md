@@ -34,8 +34,14 @@ uv sync
 pytest tests
 ```
 
-## Coverage
+## Run Coverage
 ```shell
 coverage run -m pytest tests
 coverage report -m
+```
+
+## Contribute
+This will install pre-commit hook to run multiple checks, ruff and pyright before committing.
+```shell
+pre-commit install
 ```
