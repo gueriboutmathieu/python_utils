@@ -29,15 +29,16 @@ jobs:
           VERSION=$(git log -1 --pretty=%B | grep -oP 'release: v\K[0-9]+\.[0-9]+\.[0-9]+')
           if [ -z "$VERSION" ]; then
             echo "No release tag found in commit message, skipping build and release"
-            exit 0
+            echo "version=" >> $GITHUB_OUTPUT
           else
             echo "Found new release tag: $VERSION, proceeding with build and release"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
-          fi
+
   build-and-release:
     name: Build and release
     runs-on: ubuntu-latest
     needs: check-release-tag
+    if: needs.check-release-tag.outputs.version != ''
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
