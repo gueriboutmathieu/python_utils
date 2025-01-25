@@ -57,6 +57,7 @@ class CustomJsonFormatter(JsonFormatter):
 def get_logger(
     name: str,
     stdout_log_level: Optional[int] = None,
+    indent: Optional[int] = None,
 ) -> logging.Logger:
     stdout_log_level = global_stdout_log_level or logging.INFO
 
@@ -66,7 +67,7 @@ def get_logger(
     # to DEBUG to make sure log events reach the handlers
     logger.setLevel("DEBUG")
 
-    stdout_handler = get_stdout_handler(stdout_log_level, CustomJsonFormatter())
+    stdout_handler = get_stdout_handler(stdout_log_level, CustomJsonFormatter(indent=indent))
     logger.addHandler(stdout_handler)
 
     return logger

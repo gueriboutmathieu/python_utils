@@ -5,7 +5,7 @@ from typing import Callable, Concatenate, Generic, ParamSpec, Protocol, TypeVar
 
 from python_utils.loggers import get_logger
 
-logger = get_logger(__name__)
+logger = get_logger(__name__, indent=4)
 
 
 class CommandContext(Protocol):
