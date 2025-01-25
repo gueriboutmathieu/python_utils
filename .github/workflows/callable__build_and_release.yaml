@@ -66,6 +66,9 @@ jobs:
           source .venv/bin/activate
           uv sync
 
+      - name: Set up Git user
+        uses: fregante/setup-git-user@v2
+
       - name: Checkout to temporary branch
         run: |
           git checkout -b release-${{ needs.check-release-tag.outputs.version }}
@@ -81,9 +84,6 @@ jobs:
           git add ${{ inputs.package-name }}
           git commit -m "Generate stubs files for release ${{ needs.check-release-tag.outputs.version }}"
           git push origin release-${{ needs.check-release-tag.outputs.version }}
-
-      - name: Set up Git user
-        uses: fregante/setup-git-user@v2
 
       - name: Create tag
         id: create_tag
