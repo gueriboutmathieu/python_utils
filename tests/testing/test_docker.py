@@ -34,7 +34,7 @@ def test_docker_compose_dir():
         assert os.path.isdir(tmpdir)
 
         # Check if the Docker Compose file exists in the temporary directory
-        compose_file_path = os.path.join(tmpdir, "docker-compose.yml")
+        compose_file_path = os.path.join(tmpdir, "docker-compose.yaml")
         assert os.path.isfile(compose_file_path)
 
         # Check if the content of the Docker Compose file is as expected

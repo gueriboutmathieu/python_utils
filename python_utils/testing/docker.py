@@ -37,7 +37,7 @@ def stop_service(service_name: str, workdir: str) -> None:
 @contextlib.contextmanager
 def docker_compose_dir(docker_compose_file_content: str):
     with tempfile.TemporaryDirectory() as tmpdir:
-        with open(os.path.join(tmpdir, "docker-compose.yml"), "w") as f:
+        with open(os.path.join(tmpdir, "docker-compose.yaml"), "w") as f:
             f.write(docker_compose_file_content)
 
         yield tmpdir

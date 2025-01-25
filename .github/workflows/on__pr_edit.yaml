@@ -11,5 +11,5 @@ on:
 jobs:
   validate-pr-title:
     name: Validate PR title
-    uses: ./.github/workflows/callable__validate_pr_title.yml
+    uses: ./.github/workflows/callable__validate_pr_title.yaml
     secrets: inherit
