@@ -27,7 +27,7 @@ jobs:
     name: Manage release
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v3
         with:
           release-type: ${{ inputs.release-type }}
           package-name: ${{ inputs.package-name }}
