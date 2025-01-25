@@ -16,6 +16,7 @@ jobs:
   build-and-release:
     name: Build and release
     uses: ./.github/workflows/callable__build_and_release.yaml
+    needs: check-python-code
     secrets: inherit
     with:
       package-name: "python_utils"
