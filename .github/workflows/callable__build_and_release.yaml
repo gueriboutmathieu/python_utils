@@ -1,0 +1,84 @@
+name: On release
+
+on:
+  workflow_call:
+    inputs:
+      package-name:
+        description: "Name of the published package"
+        type: string
+        required: true
+      python-version:
+          description: "Python version to use"
+          type: string
+          required: false
+          default: "3.11"
+
+jobs:
+  check-release-tag:
+    name: Check release tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check_release_tag.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if release tag is present in commit message
+        id: check_release_tag
+        run: |
+          VERSION=$(git log -1 --pretty=%B | grep -oP 'release: v\K[0-9]+\.[0-9]+\.[0-9]+')
+          if [ -z "$VERSION" ]; then
+            echo "No release tag found in commit message, skipping build and release"
+            exit 0
+          else
+            echo "Found new release tag: $VERSION, proceeding with build and release"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+  build-and-release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    needs: check-release-tag
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install and setup uv
+        run: |
+          echo "Installing uv"
+          sudo apt-get update
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv python install ${{ inputs.python-version }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        working-directory: .
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv sync
+
+      - name: Generate stubs files
+        run: |
+          stubgen --include-private ${{ inputs.package-name }}
+          rsync -a out/${{ inputs.package-name }}/ ${{ inputs.package-name }}/
+
+      - name: Build package with uv
+        run: |
+          source .venv/bin/activate
+          uv build
+
+      - name: Create tag
+        id: create_tag
+        run: |
+          VERSION=${{ needs.check-release-tag.outputs.version }}
+          git tag -a $VERSION -m "Release version $VERSION"
+          git push origin $VERSION
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.check-release-tag.outputs.version }}

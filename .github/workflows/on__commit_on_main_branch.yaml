@@ -13,10 +13,9 @@ jobs:
     with:
       pytest-root: "."
 
-  manage_release:
-    needs: check-python-code
-    name: Manage release
-    uses: ./.github/workflows/callable__manage_release.yml
+  build-and-release:
+    name: Build and release
+    uses: ./.github/workflows/callable__build_and_release.yaml
     secrets: inherit
     with:
       package-name: "python_utils"

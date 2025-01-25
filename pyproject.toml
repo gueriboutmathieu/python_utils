@@ -1,7 +1,7 @@
 [project]
 name = "python_utils"
 description = "Collection of utilities for Python projects."
-version = "1.0.0"
+version = "0.0.0"
 authors = [{ name = "Mathieu Gueribout", email = "gueribout.mathieu@protonmail.com" }]
 maintainers = [{ name = "Mathieu Gueribout", email = "gueribout.mathieu@protonmail.com" }]
 readme = "README.md"
@@ -15,6 +15,7 @@ dependencies = [
     "docker==7.1.*",
     "fastapi==0.115.*",
     "httpx==0.28.*",
+    "mypy==1.14.*",
     "pre-commit==4.0.*",
     "psycopg2-binary==2.9.*",
     "pyjwt==2.10.*",
@@ -37,6 +38,19 @@ repository = "https://github.com/gueriboutmathieu/python_utils"
 
 [tool.uv]
 package = true  # Install current package when running `uv sync`
+
+[build-system]
+requires = ["setuptools==75.8.*", "wheel==0.45.*", "setuptools-scm[toml]==8.1.*"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+python_utils = ["*.pyi"]
+
+[tool.setuptools]
+packages = [
+    "python_utils",
+    "python_utils.testing",
+]
 
 [tool.coverage.run]
 source = ["python_utils"]
