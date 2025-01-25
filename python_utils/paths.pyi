@@ -1,0 +1,3 @@
+import pathlib
+
+def get_repository_root_path(path: pathlib.Path | str) -> str: ...

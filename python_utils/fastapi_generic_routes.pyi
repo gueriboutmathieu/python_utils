@@ -1,0 +1,3 @@
+from fastapi import FastAPI as FastAPI, Request as Request, Response as Response
+
+def load_routes(fastapi_app: FastAPI, application_name: str, version: str) -> None: ...
