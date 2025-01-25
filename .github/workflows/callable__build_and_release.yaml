@@ -66,16 +66,21 @@ jobs:
           source .venv/bin/activate
           uv sync
 
+      - name: Checkout to temporary branch
+        run: |
+          git checkout -b release-${{ needs.check-release-tag.outputs.version }}
+
       - name: Generate stubs files
         run: |
           source .venv/bin/activate
           stubgen --include-private ${{ inputs.package-name }}
           rsync -a out/${{ inputs.package-name }}/ ${{ inputs.package-name }}/
 
-      - name: Build package with uv
+      - name: Commit stubs files
         run: |
-          source .venv/bin/activate
-          uv build
+          git add ${{ inputs.package-name }}
+          git commit -m "Generate stubs files for release ${{ needs.check-release-tag.outputs.version }}"
+          git push origin release-${{ needs.check-release-tag.outputs.version }}
 
       - name: Set up Git user
         uses: fregante/setup-git-user@v2
@@ -91,4 +96,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.check-release-tag.outputs.version }}
-          files: dist/${{ inputs.package-name }}-${{ needs.check-release-tag.outputs.version }}.tar.gz
+
+      - name: Delete temporary branch
+        run: |
+          git checkout main
+          git branch -D release-${{ needs.check-release-tag.outputs.version }}
