@@ -77,6 +77,9 @@ jobs:
           source .venv/bin/activate
           uv build
 
+      - name: Set up Git user
+        uses: fregante/setup-git-user@v2
+
       - name: Create tag
         id: create_tag
         run: |
