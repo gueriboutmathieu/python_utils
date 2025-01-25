@@ -36,6 +36,7 @@ jobs:
           else
             echo "Found new release tag: $VERSION, proceeding with build and release"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
 
   build-and-release:
     name: Build and release
