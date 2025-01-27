@@ -101,4 +101,4 @@ jobs:
         run: |
           git checkout main
           git branch -D release-${{ needs.check-release-tag.outputs.version }}
-          git push origin
+          git push origin --delete release-${{ needs.check-release-tag.outputs.version }}
