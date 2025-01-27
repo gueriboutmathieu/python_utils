@@ -13,6 +13,11 @@ on:
         type: string
         required: false
         default: "tests"
+      env-vars:
+        description: "Additional environment variables to set"
+        type: string
+        required: false
+        default: '{}'
 
 jobs:
   check-python-code:
@@ -23,44 +28,51 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install and setup uv
-      run: |
-        echo "Installing uv"
-        sudo apt-get update
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        uv python install ${{ inputs.python-version }}
+      - name: Setup env vars
+        run: |
+          ENV_VARS=$(echo '${{ inputs.env-vars }}' | jq -r 'to_entries | map("\(.key)=\(.value)") | .[]')
+          for ENV_VAR in $ENV_VARS; do
+            echo "$ENV_VAR" >> $GITHUB_ENV
+          done
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ inputs.python-version }}
+      - name: Install and setup uv
+        run: |
+          echo "Installing uv"
+          sudo apt-get update
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv python install ${{ inputs.python-version }}
 
-    - name: Install dependencies
-      working-directory: .
-      run: |
-        uv venv
-        uv sync
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
 
-    - name: Ruff (linter and code formatter)
-      working-directory: .
-      shell: sh
-      run: uv run ruff check
+      - name: Install dependencies
+        working-directory: .
+        run: |
+          uv venv
+          uv sync
 
-    - name: Pyright (type check)
-      working-directory: .
-      shell: sh
-      run: uv run pyright
+      - name: Ruff (linter and code formatter)
+        working-directory: .
+        shell: sh
+        run: uv run ruff check
 
-    - name: Run Pytest
-      working-directory: .
-      shell: sh
-      run: |
-        uv run coverage run -m pytest ${{ inputs.pytest-root }} -x
+      - name: Pyright (type check)
+        working-directory: .
+        shell: sh
+        run: uv run pyright
 
-    - name: Coverage comment
-      uses: py-cov-action/python-coverage-comment-action@v3
-      with:
-        GITHUB_TOKEN: ${{ github.token }}
-        COVERAGE_PATH: .
+      - name: Run Pytest
+        working-directory: .
+        shell: sh
+        run: |
+          uv run coverage run -m pytest ${{ inputs.pytest-root }} -x
+
+      - name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+          COVERAGE_PATH: .
