@@ -3,21 +3,16 @@ name: 🧩 Check python code
 on:
   workflow_call:
     inputs:
-        python-version:
-            description: "Python version to use"
-            type: string
-            required: false
-            default: "3.11"
-        pytest-root:
-            description: "Root directory for pytest"
-            type: string
-            required: false
-            default: "tests"
-        check_alembic_migrations:
-            description: "Whether to check alembic migrations"
-            required: false
-            type: boolean
-            default: false
+      python-version:
+        description: "Python version to use"
+        type: string
+        required: false
+        default: "3.11"
+      pytest-root:
+        description: "Root directory for pytest"
+        type: string
+        required: false
+        default: "tests"
 
 jobs:
   check-python-code:
@@ -58,12 +53,6 @@ jobs:
       working-directory: .
       shell: sh
       run: uv run pyright
-
-    - name: Validate alembic migrations
-      if: ${{ inputs.check_alembic_migrations == true }}
-      uses: gueriboutmathieu/python_utils/.github/actions/validate_alembic_migrations@main
-      with:
-        root-directory: .
 
     - name: Run Pytest
       working-directory: .
