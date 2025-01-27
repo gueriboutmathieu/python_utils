@@ -22,10 +22,14 @@ inputs:
     description: "Database name"
     required: false
     default: "test_db"
-  root-directory:
+  root_directory:
     description: "The root path from where this action will be executed, aka the root path of the app"
     required: false
     default: "."
+  docker_image:
+    description: "The Docker image to use for the database"
+    required: false
+    default: "postgres"
 
 runs:
   using: "composite"
@@ -33,7 +37,10 @@ runs:
   steps:
     - name: Start PostgreSQL service
       run: |
-        docker run --name postgres -e POSTGRES_USER=${{ inputs.sql_user }} -e POSTGRES_PASSWORD=${{ inputs.sql_password }} -e POSTGRES_DB=${{ inputs.sql_database }} -d -p ${{ inputs.sql_port }}:5432 postgres
+        docker run --name postgres -e POSTGRES_USER=${{ inputs.sql_user }} \
+          -e POSTGRES_PASSWORD=${{ inputs.sql_password }} \
+          -e POSTGRES_DB=${{ inputs.sql_database }} \
+          -d -p ${{ inputs.sql_port }}:5432 ${{ inputs.docker_image }}
       shell: bash
 
     - name: Wait for PostgreSQL to be ready
@@ -42,7 +49,7 @@ runs:
       shell: bash
 
     - name: Run Alembic upgrade
-      working-directory: ${{ inputs.root-directory }}
+      working-directory: ${{ inputs.root_directory }}
       run: uv run alembic upgrade head
       shell: bash
       env:
@@ -53,7 +60,7 @@ runs:
         SQL_DATABASE: ${{ inputs.sql_database }}
 
     - name: Check for migration differences
-      working-directory: ${{ inputs.root-directory }}
+      working-directory: ${{ inputs.root_directory }}
       run: uv run alembic check
       shell: bash
       env:
@@ -64,7 +71,7 @@ runs:
         SQL_DATABASE: ${{ inputs.sql_database }}
 
     - name: Run Alembic downgrade
-      working-directory: ${{ inputs.root-directory }}
+      working-directory: ${{ inputs.root_directory }}
       run: uv run alembic downgrade base
       shell: bash
       env:
