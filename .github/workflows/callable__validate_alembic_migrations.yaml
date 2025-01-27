@@ -41,7 +41,7 @@ on:
 
 jobs:
   check-alembic-migrations:
-    runs-on: composite
+    runs-on: ubuntu-latest
 
     steps:
       - name: Start PostgreSQL service
