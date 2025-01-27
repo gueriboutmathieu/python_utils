@@ -55,6 +55,21 @@ jobs:
         run: |
           until docker exec postgres pg_isready -U ${{ inputs.sql_user }} -h ${{ inputs.sql_host }} -p ${{ inputs.sql_port }}; do sleep 1; done
 
+      - uses: actions/checkout@v4
+
+      - name: Install and setup uv
+        run: |
+          echo "Installing uv"
+          sudo apt-get update
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv python install ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        working-directory: .
+        run: |
+          uv venv
+          uv sync
+
       - name: Run Alembic upgrade
         working-directory: ${{ inputs.root_directory }}
         run: uv run alembic upgrade head
