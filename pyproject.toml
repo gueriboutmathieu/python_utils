@@ -1,7 +1,7 @@
 [project]
 name = "python_utils"
 description = "Collection of utilities for Python projects."
-version = "1.0.8"
+version = "1.0.9"
 authors = [{ name = "Mathieu Gueribout", email = "gueribout.mathieu@protonmail.com" }]
 maintainers = [{ name = "Mathieu Gueribout", email = "gueribout.mathieu@protonmail.com" }]
 readme = "README.md"
