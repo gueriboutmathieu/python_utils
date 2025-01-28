@@ -1,0 +1,16 @@
+import logging
+from _typeshed import Incomplete
+from pythonjsonlogger.json import JsonFormatter
+from typing import Any, Generator
+
+global_stdout_log_level: int | None
+
+def get_stdout_handler(log_level: int, log_formatter: logging.Formatter): ...
+
+class CustomJsonFormatter(JsonFormatter):
+    add_context_fields: Incomplete
+    def __init__(self, *args: Any, add_context_fields: bool = True, indent: int | None = None, **kwargs: Any) -> None: ...
+    def add_fields(self, log_record: dict[str, Any], record: logging.LogRecord, message_dict: dict[str, Any]): ...
+
+def get_logger(name: str, stdout_log_level: int | None = None, indent: int | None = None) -> logging.Logger: ...
+def log_and_raise(logger: logging.Logger, exception_to_raise: Exception | None = None, extra_log_data: dict[str, Any] = {}) -> Generator[None, None, None]: ...
