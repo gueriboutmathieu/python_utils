@@ -57,17 +57,14 @@ jobs:
 
       - name: Ruff (linter and code formatter)
         working-directory: .
-        shell: sh
         run: uv run ruff check
 
       - name: Pyright (type check)
         working-directory: .
-        shell: sh
         run: uv run pyright
 
       - name: Run Pytest
         working-directory: .
-        shell: sh
         run: |
           uv run coverage run -m pytest ${{ inputs.pytest-root }} -x
 
