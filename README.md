@@ -10,7 +10,7 @@
 | python\_utils/entity.py                                  |        3 |        0 |    100% |           |
 | python\_utils/env\_vars.py                               |       23 |        0 |    100% |           |
 | python\_utils/fastapi\_generic\_routes.py                |       15 |        0 |    100% |           |
-| python\_utils/fastapi\_middleware.py                     |       52 |        4 |     92% |34, 92, 97-98 |
+| python\_utils/fastapi\_middleware.py                     |       55 |        5 |     91% |34, 94, 99-102 |
 | python\_utils/json.py                                    |        3 |        3 |      0% |      1-13 |
 | python\_utils/loggers.py                                 |       39 |        0 |    100% |           |
 | python\_utils/paths.py                                   |       13 |        1 |     92% |        16 |
@@ -21,7 +21,7 @@
 | python\_utils/testing/directory.py                       |       11 |        0 |    100% |           |
 | python\_utils/testing/docker.py                          |       27 |        6 |     78% |18-20, 32-34 |
 | python\_utils/testing/server.py                          |       41 |        4 |     90% | 52-54, 65 |
-|                                                **TOTAL** |  **454** |   **37** | **92%** |           |
+|                                                **TOTAL** |  **457** |   **38** | **92%** |           |
 
 
 ## Setup coverage badge
