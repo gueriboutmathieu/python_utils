@@ -84,18 +84,22 @@ def add_middleware(fastapi_app: FastAPI, has_root_path: bool = False) -> None:
         response.headers["X-Process-Time"] = str(processing_time)
 
         if log_path:
-            # as `response` is a stream, we must deal with an iterator and reconstruct the body_iterator after it has been browsed
-            # more details about the following code: https://github.com/encode/starlette/issues/874#issuecomment-1027743996
-            response_body = [chunk async for chunk in response.body_iterator]
-            response.body_iterator = iterate_in_threadpool(iter(response_body))
-            if len(response_body) == 0:
-                parsed_response_body = None
-            else:
-                response_bytes = cast(bytes, response_body[0])
-                try:
-                    parsed_response_body = json.loads(response_bytes.decode())
-                except json.JSONDecodeError:
+            content_type = response.headers.get("content-type")
+            if content_type is None or content_type.startswith("application/json"):
+                # as `response` is a stream, we must deal with an iterator and reconstruct the body_iterator after it has been browsed
+                # more details about the following code: https://github.com/encode/starlette/issues/874#issuecomment-1027743996
+                response_body = [chunk async for chunk in response.body_iterator]
+                response.body_iterator = iterate_in_threadpool(iter(response_body))
+                if len(response_body) == 0:
                     parsed_response_body = None
+                else:
+                    response_bytes = cast(bytes, response_body[0])
+                    try:
+                        parsed_response_body = json.loads(response_bytes.decode())
+                    except json.JSONDecodeError:
+                        parsed_response_body = None
+            else:
+                parsed_response_body = "<streaming response - not logged>"
 
             logger.info(
                 "Request processed",
